@@ -19,9 +19,9 @@ describe('ESClient', () => {
       foo: 'bar'
     });
     logger = {
-      debug: 'DEBUG',
-      error: 'ERROR',
-      warn: 'WARN',
+      debug: sinon.stub(),
+      error: sinon.stub(),
+      warn: sinon.stub(),
       verbose: sinon.stub()
     };
     agentkeepalive = sinon.stub();
@@ -93,17 +93,18 @@ describe('ESClient', () => {
 
     const log = new LogConstructor(); // eslint-disable-line no-new
 
+    chai.assert.isFunction(log.info);
+    chai.assert.isFunction(log.debug);
+    chai.assert.isFunction(log.error);
+    chai.assert.isFunction(log.warning);
     chai.assert.isFunction(log.trace);
     chai.assert.isFunction(log.close);
 
-    log.trace('POST', {url: 'local:9200', agent: 'elasticsearch'}, {request: 'body'}, {response: 'body'}, 200);
+    // Verify methods delegate to the original logger (binding must be preserved)
+    log.debug('test-debug');
+    expect(logger.debug).to.have.been.calledWith('test-debug');
 
-    expect(_.omit(log, 'trace', 'close')).to.deep.equal({
-      info: 'DEBUG',
-      debug: 'DEBUG',
-      error: 'ERROR',
-      warning: 'WARN'
-    });
+    log.trace('POST', {url: 'local:9200', agent: 'elasticsearch'}, {request: 'body'}, {response: 'body'}, 200);
 
     expect(logger.verbose).to.have.been.calledWith({
       httpMethod: 'POST',

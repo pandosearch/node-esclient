@@ -14,10 +14,10 @@ module.exports = function ESClient(config) {
 
   function LogConstructor() {
     // info tends to log 'Request complete' messages which we usually don't care about
-    this.info = log.debug;
-    this.debug = log.debug;
-    this.error = log.error;
-    this.warning = log.warn;
+    this.info = log.debug.bind(log);
+    this.debug = log.debug.bind(log);
+    this.error = log.error.bind(log);
+    this.warning = log.warn.bind(log);
 
     // this can not be an arrow function because we require access to the arguments.
     this.trace = function () {
