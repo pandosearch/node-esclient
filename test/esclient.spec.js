@@ -5,7 +5,7 @@ const chai = require('chai');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = chai.expect;
-chai.use(require('sinon-chai'));
+chai.use(require('sinon-chai').default);
 
 describe('ESClient', () => {
 
