@@ -1,15 +1,14 @@
 # Node.js esclient module
 
-[![build:?](https://img.shields.io/travis/Enrise/node-esclient.svg?style=flat-square)](https://travis-ci.org/Enrise/node-esclient)
-[![Coverage Status](https://img.shields.io/coveralls/Enrise/node-esclient/master.svg?style=flat-square)](https://coveralls.io/github/Enrise/node-esclient?branch=master)
-[![dependencies:?](https://img.shields.io/david/Enrise/node-esclient.svg?style=flat-square)](https://david-dm.org/Enrise/node-esclient)
-[![devDependencies:?](https://img.shields.io/david/dev/Enrise/node-esclient.svg?style=flat-square)](https://david-dm.org/Enrise/node-esclient)
-
 > A simple wrapper around the [elasticsearch](https://github.com/elastic/elasticsearch-js) client, optionally with [enrise-logger](https://github.com/Enrise/node-logger) integration.
 
 ## Deprecated
 
 This repository is deprecated and will be archived.
+
+### Requirements
+
+Node.js ≥ 20
 
 ### Installation
 NPM: `npm install enrise-esclient --save`  
