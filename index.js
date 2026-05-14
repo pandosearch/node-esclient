@@ -35,7 +35,12 @@ module.exports = function ESClient(config) {
   // us fix the out-of-connections problems, it also seemed to help with dangling connections.
   config = _.merge({
     createNodeAgent(connection, conf) {
-      return new AgentKeepAlive(connection.makeAgentConfig(conf));
+      const agentConfig = connection.makeAgentConfig(conf);
+      if (agentConfig.freeSocketKeepAliveTimeout !== undefined) {
+        agentConfig.freeSocketTimeout = agentConfig.freeSocketTimeout || agentConfig.freeSocketKeepAliveTimeout;
+        delete agentConfig.freeSocketKeepAliveTimeout;
+      }
+      return new AgentKeepAlive(agentConfig);
     },
     log: log && LogConstructor
   }, config);

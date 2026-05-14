@@ -69,7 +69,7 @@ describe('ESClient', () => {
   it('correctly calls the AgentKeepAlive', () => {
     new EnriseClient(); // eslint-disable-line no-new
     const connection = {
-      makeAgentConfig: sinon.stub().returns('call agentkeepalive')
+      makeAgentConfig: sinon.stub().returns({foo: 'bar'})
     };
     const config = {
       foo: 'bar'
@@ -79,7 +79,27 @@ describe('ESClient', () => {
     expect(connection.makeAgentConfig).to.have.been.calledWith({
       foo: 'bar'
     });
-    expect(agentkeepalive).to.have.been.calledWith('call agentkeepalive');
+    expect(agentkeepalive).to.have.been.calledWith({foo: 'bar'});
+  });
+
+  it('remaps freeSocketKeepAliveTimeout to freeSocketTimeout for agentkeepalive@4', () => {
+    new EnriseClient(); // eslint-disable-line no-new
+    const createNodeAgent = ElasticsearchClient.args[0][0].createNodeAgent;
+
+    const connection = {makeAgentConfig: sinon.stub().returns({freeSocketKeepAliveTimeout: 5000})};
+    createNodeAgent(connection, {});
+    expect(agentkeepalive).to.have.been.calledWith({freeSocketTimeout: 5000});
+    expect(agentkeepalive.lastCall.args[0]).to.not.have.property('freeSocketKeepAliveTimeout');
+
+
+    agentkeepalive.resetHistory();
+
+    // does not overwrite an existing freeSocketTimeout
+    const agentConfig2 = {freeSocketTimeout: 3000, freeSocketKeepAliveTimeout: 5000};
+    const connection2 = {makeAgentConfig: sinon.stub().returns(agentConfig2)};
+    createNodeAgent(connection2, {});
+    expect(agentkeepalive).to.have.been.calledWith({freeSocketTimeout: 3000});
+    expect(agentkeepalive.lastCall.args[0]).to.not.have.property('freeSocketKeepAliveTimeout');
   });
 
   it('correctly uses a logger, creates the LogConstructor and correctly formats trace information', () => {
